@@ -272,7 +272,7 @@ books_message_id_dict = {
     "Biology Lab Manual":194,
     "Photographic Atlas":195,
     "Problem-Based Physiology Fluid, Electrolyte & Acid-Base":232,
-    "Problem-Based Physiology Neurophysiology, Gastrointestinal & Endocrine Systems":232,
+    "Problem-Based Physiology Neurophysiology, Gastrointestinal & Endocrine Systems":234,
     "Problem-Based Physiology Cardio, Respiratory & Renal Systems":235,
     "Problem-Based Physiology":237,
     "Color Atlas of Physiology":239,

@@ -496,7 +496,8 @@ async def answer_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 _message_id = re.findall(r'(\d+)',update.message.reply_to_message.text)[1]
                 _q_subject_ = re.findall(r'(#.+)',update.message.reply_to_message.text)[0][1:]
                 _answer_message_ = await bot.copy_message(chat_id=user_id, from_chat_id=update.message.chat.id, message_id=update.message.message_id,reply_to_message_id=_message_id)
-                
+                if  == "آتاتومی گیاهی":
+                    _q_subject_ = "آناتومی گیاهی"
                 _answer_message_button_ = [[InlineKeyboardButton('اشکالم رفع شد',callback_data="f"+str(update.message.message_id))],
                                            [InlineKeyboardButton('هنوز مشکلم بر طرف نشده',callback_data="_"+str(q_subject_tanslator[_q_subject_])+str(update.message.message_id))]]
                 

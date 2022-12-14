@@ -15,8 +15,8 @@ import requests
 
 from config import *
 
-TOKEN = '5434042917:AAGT9tVTf8PYpV2WjB1LdGSKOMew7W44A14' #real
-#TOKEN = '5644860622:AAEVpuIc6uPDnW5bIKsQWk8mTKgYzTLBgAA'  #test
+#TOKEN = '5434042917:AAGT9tVTf8PYpV2WjB1LdGSKOMew7W44A14' #real
+TOKEN = '5644860622:AAEVpuIc6uPDnW5bIKsQWk8mTKgYzTLBgAA'  #test
 
 bot = Bot(token=TOKEN)
 # Enable logging
@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 #variable
 bot_name = "مرام"
 #private Q&A group
-#main_group_id = -1001850055659 #test
-main_group_id = -1001827444680 #real
+main_group_id = -1001850055659 #test
+#main_group_id = -1001827444680 #real
 
 #channels id
 quiz_channel = -1001869721469
@@ -37,8 +37,8 @@ file_channel_id = -1001795975508
 condor_spam_id = -1001802178902
 archive_channel_id = -1001780135040
 #public Q&A group
-#public_group = -1001802178902 #test
-public_group = "@Condorlab_gap" #real
+public_group = -1001802178902 #test
+#public_group = "@Condorlab_gap" #real
 
 #main channel id
 channel_id = "@condor_lab"
@@ -47,7 +47,7 @@ condorcast_url = "https://gist.github.com/Am005mA/f2cc8436db9ade85fee871c67729d4
 quiz_url = "https://gist.github.com/Am005mA/378957e918917c98edbda561edacb7c7"
 note_url = "https://gist.github.com/Am005mA/a873fc814695891c9b06b0255bb9f32a"
 #admins id 
-bot_admins = [owener_id,bussiness_id,mohsen_id,danial_id,nima_id,arman_id,sheyda_id,fatemeh_id,mani_id,goli_id,kia_id,yehaneh_id,fallah_id,anita_id,matin_id,parham_id,parsa_id,hasti_id]
+bot_admins = [owener_id,bussiness_id,mohsen_id,danial_id,nima_id,arman_id,sheyda_id,fatemeh_id,mani_id,goli_id,kia_id,yehaneh_id,fallah_id,anita_id,matin_id,parham_id,parsa_id,hasti_id,aryan_id]
 
 #convestation returns
 q_option,q_choose,q_text,not_joined,joined,q_continue,q_c_done = range(7)
@@ -256,6 +256,7 @@ async def resend_message_handler(messages_list:list,bot,target_chat_id):
             else:
                 await bot.copy_message(chat_id=target_chat_id, from_chat_id=messages_list[i].chat.id, message_id=messages_list[i].message_id)
             i+=1
+    messages_list['sent'] = True
 
 async def user_data(user_id,bot):
     _channel_id = "@condor_lab" #real
@@ -401,6 +402,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def question_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if str(update.message.chat.id) not in limited_users_list:
         context.user_data["q_messages"] = []
+        context.user_data["q_sent"] = False
         await update.message.reply_html(
         rf"لطفا از گزینه ها یکی را انتخاب کنید",
         reply_markup=ReplyKeyboardMarkup(
@@ -445,23 +447,26 @@ async def question_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 async def question_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if len(context.user_data["q_messages"]) != 0:
-        await resend_message_handler(messages_list=context.user_data["q_messages"],bot=bot,target_chat_id=main_group_id)
-        last_q_message_id = context.user_data["q_messages"][-1].message_id
-        _question_message = await bot.send_message(chat_id=main_group_id,text=f'!<code>{context.user_data["q_user_id"]}</code>-{last_q_message_id}\n#{context.user_data["q_subject"].replace(" ","_")}',parse_mode=constants.ParseMode.HTML)
-        await bot.pin_chat_message(chat_id = main_group_id, message_id = _question_message.message_id, disable_notification=True)
+        if not context.user_data["q_sent"]:
+            await resend_message_handler(messages_list=context.user_data["q_messages"],bot=bot,target_chat_id=main_group_id)
+            last_q_message_id = context.user_data["q_messages"][-1].message_id
         
-        await update.callback_query.message.reply_text(q_done_txt,reply_markup=ReplyKeyboardMarkup(
-            start_keyboard, one_time_keyboard=True,resize_keyboard=True))
+            _question_message = await bot.send_message(chat_id=main_group_id,text=f'!<code>{context.user_data["q_user_id"]}</code>-{last_q_message_id}\n#{context.user_data["q_subject"].replace(" ","_")}',parse_mode=constants.ParseMode.HTML)
+            await bot.pin_chat_message(chat_id = main_group_id, message_id = _question_message.message_id, disable_notification=True)
         
-        user_data = context.user_data
-        if "q_subject" in user_data:
-            del user_data["q_subject"]
-        if "q_user_id" in user_data:
-            del user_data["q_user_id"]
-        if "q_messages" in user_data:
-            del user_data["q_messages"]
+            await update.callback_query.message.reply_text(q_done_txt,reply_markup=ReplyKeyboardMarkup(
+                start_keyboard, one_time_keyboard=True,resize_keyboard=True))
+        
+        if "q_subject" in context.user_data:
+            del context.user_data["q_subject"]
+        if "q_user_id" in context.user_data:
+            del context.user_data["q_user_id"]
+        if "q_messages" in context.user_data:
+            del context.user_data["q_messages"]
+        if "q_sent" in context.user_data:
+            del context.user_data["q_sent"]
 
-        user_data.clear()
+        context.user_data.clear()
         return ConversationHandler.END
     
     elif len(context.user_data["q_messages"]) == 0:

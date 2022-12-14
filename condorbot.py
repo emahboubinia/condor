@@ -256,7 +256,6 @@ async def resend_message_handler(messages_list:list,bot,target_chat_id):
             else:
                 await bot.copy_message(chat_id=target_chat_id, from_chat_id=messages_list[i].chat.id, message_id=messages_list[i].message_id)
             i+=1
-    messages_list['sent'] = True
 
 async def user_data(user_id,bot):
     _channel_id = "@condor_lab" #real
@@ -402,7 +401,6 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def question_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if str(update.message.chat.id) not in limited_users_list:
         context.user_data["q_messages"] = []
-        context.user_data["q_sent"] = False
         await update.message.reply_html(
         rf"لطفا از گزینه ها یکی را انتخاب کنید",
         reply_markup=ReplyKeyboardMarkup(
@@ -447,15 +445,14 @@ async def question_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 async def question_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if len(context.user_data["q_messages"]) != 0:
-        if not context.user_data["q_sent"]:
-            await resend_message_handler(messages_list=context.user_data["q_messages"],bot=bot,target_chat_id=main_group_id)
-            last_q_message_id = context.user_data["q_messages"][-1].message_id
-        
-            _question_message = await bot.send_message(chat_id=main_group_id,text=f'!<code>{context.user_data["q_user_id"]}</code>-{last_q_message_id}\n#{context.user_data["q_subject"].replace(" ","_")}',parse_mode=constants.ParseMode.HTML)
-            await bot.pin_chat_message(chat_id = main_group_id, message_id = _question_message.message_id, disable_notification=True)
-        
-            await update.callback_query.message.reply_text(q_done_txt,reply_markup=ReplyKeyboardMarkup(
-                start_keyboard, one_time_keyboard=True,resize_keyboard=True))
+        await resend_message_handler(messages_list=context.user_data["q_messages"],bot=bot,target_chat_id=main_group_id)
+        last_q_message_id = context.user_data["q_messages"][-1].message_id
+    
+        _question_message = await bot.send_message(chat_id=main_group_id,text=f'!<code>{context.user_data["q_user_id"]}</code>-{last_q_message_id}\n#{context.user_data["q_subject"].replace(" ","_")}',parse_mode=constants.ParseMode.HTML)
+        await bot.pin_chat_message(chat_id = main_group_id, message_id = _question_message.message_id, disable_notification=True)
+    
+        await update.callback_query.message.reply_text(q_done_txt,reply_markup=ReplyKeyboardMarkup(
+            start_keyboard, one_time_keyboard=True,resize_keyboard=True))
         
         if "q_subject" in context.user_data:
             del context.user_data["q_subject"]
@@ -463,8 +460,6 @@ async def question_done(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             del context.user_data["q_user_id"]
         if "q_messages" in context.user_data:
             del context.user_data["q_messages"]
-        if "q_sent" in context.user_data:
-            del context.user_data["q_sent"]
 
         context.user_data.clear()
         return ConversationHandler.END
@@ -477,15 +472,14 @@ async def question_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     await update.callback_query.message.reply_html(text="چطوری میتونم بهت کمک کنم",reply_markup=ReplyKeyboardMarkup(
             start_keyboard, one_time_keyboard=True,resize_keyboard=True))
 
-    user_data = context.user_data
-    if "q_subject" in user_data:
-        del user_data["q_subject"]
-    if "q_user_id" in user_data:
-        del user_data["q_user_id"]
-    if "q_messages" in user_data:
-        del user_data["q_messages"]
+    if "q_subject" in context.user_data:
+        del context.user_data["q_subject"]
+    if "q_user_id" in context.user_data:
+        del context.user_data["q_user_id"]
+    if "q_messages" in context.user_data:
+        del context.user_data["q_messages"]
 
-    user_data.clear()
+    context.user_data.clear()
     return ConversationHandler.END
 
 async def answer_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

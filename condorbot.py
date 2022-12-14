@@ -15,8 +15,8 @@ import requests
 
 from config import *
 
-#TOKEN = '5434042917:AAGT9tVTf8PYpV2WjB1LdGSKOMew7W44A14' #real
-TOKEN = '5644860622:AAEVpuIc6uPDnW5bIKsQWk8mTKgYzTLBgAA'  #test
+TOKEN = '5434042917:AAGT9tVTf8PYpV2WjB1LdGSKOMew7W44A14' #real
+#TOKEN = '5644860622:AAEVpuIc6uPDnW5bIKsQWk8mTKgYzTLBgAA'  #test
 
 bot = Bot(token=TOKEN)
 # Enable logging
@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 #variable
 bot_name = "مرام"
 #private Q&A group
-main_group_id = -1001850055659 #test
-#main_group_id = -1001827444680 #real
+#main_group_id = -1001850055659 #test
+main_group_id = -1001827444680 #real
 
 #channels id
 quiz_channel = -1001869721469
@@ -37,8 +37,8 @@ file_channel_id = -1001795975508
 condor_spam_id = -1001802178902
 archive_channel_id = -1001780135040
 #public Q&A group
-public_group = -1001802178902 #test
-#public_group = "@Condorlab_gap" #real
+#public_group = -1001802178902 #test
+public_group = "@Condorlab_gap" #real
 
 #main channel id
 channel_id = "@condor_lab"

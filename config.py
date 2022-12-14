@@ -16,6 +16,7 @@ matin_id = 710428843
 parham_id = 915611725 
 parsa_id = 5038808491
 hasti_id = 164544638
+aryan_id = 1946906012
 
 home_return_txt = "برگشت"
 

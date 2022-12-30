@@ -609,7 +609,7 @@ async def ibo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     await bot.copy_message(chat_id=update.callback_query.message.chat.id,from_chat_id=file_channel_id,message_id=IBO_data_dict[_dore])
 
 async def books_subject_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_html(text="لطفا یکی از موضاعات رو انتخاب کنید",reply_markup=InlineKeyboardMarkup(books_subject))
+    await update.message.reply_html(text="لطفا یکی از موضوع ها رو انتخاب کنید",reply_markup=InlineKeyboardMarkup(books_subject))
 
 async def books_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     subject = inv_book_subject_callback[update.callback_query.data]
@@ -617,7 +617,7 @@ async def books_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await update.callback_query.message.edit_text(text="لطفا یکی از کتاب های زیر رو انتخاب کنید",reply_markup=InlineKeyboardMarkup(books_buttons))
 
 async def return_book_subject(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.callback_query.message.edit_text(text="لطفا یکی از موضاعات رو انتخاب کنید",reply_markup=InlineKeyboardMarkup(books_subject))
+    await update.callback_query.message.edit_text(text="لطفا یکی از موضوع ها رو انتخاب کنید",reply_markup=InlineKeyboardMarkup(books_subject))
 
 async def send_book_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if update.callback_query.data[:2] == "lb":

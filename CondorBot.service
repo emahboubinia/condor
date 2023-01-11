@@ -4,7 +4,7 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/python3 /home/<username>/test.py
+ExecStart=/usr/bin/python3 /home/emah/condor/condorbot.py
 User=emah
 [Install]
 WantedBy=multi-user.target

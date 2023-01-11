@@ -5,5 +5,6 @@ After=multi-user.target
 Type=simple
 Restart=always
 ExecStart=/usr/bin/python3 /home/<username>/test.py
+User=emah
 [Install]
 WantedBy=multi-user.target
